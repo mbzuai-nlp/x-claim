@@ -6,14 +6,16 @@ We also provide the code of baseline model that trains the encoder-only language
 
 This work got accepted at the **EMNLP 2023 (main)** conference.
 
+<a href='https://arxiv.org/abs/2310.18205'><img src='https://img.shields.io/badge/ArXiv-PDF-blue'></a>
+
 Authors: [Shubham Mittal](https://scholar.google.com/citations?view_op=list_works&hl=en&authuser=1&hl=en&user=l_bIdRcAAAAJ&authuser=1), [Megha Sundriyal](https://scholar.google.com/citations?hl=en&authuser=1&user=vbmdVSAAAAAJ), [Preslav Nakov](https://scholar.google.com/citations?hl=en&authuser=1&user=DfXsKZ4AAAAJ).
 
 
 ## X-CLAIM Dataset
-The `train`, `dev` and `test` split for each `language` is provided inside `./data/` folder in the file named `./data/{split}-{language}.csv`. Each file contains three columns:
-1. tokens: list of tokens in the social media post's text
-2. span_start_index: starting token index of claim span in tokens list
-3. span_end_index: ending token index (included) of claim span in tokens list
+The `train`, `dev` and `test` split for the `lang` language is provided inside `./data/` folder in the file named `./data/{split}-{lang}.csv`. Each file contains three columns:
+1. `tokens`: list of tokens in the social media post's text
+2. `span_start_index`: starting token index of claim span in tokens list
+3. `span_end_index`: ending token index (included) of claim span in tokens list
 
 For reproducibility of the results, we provide the translated data in the target `lang` language in `./data/{split}-en2{lang}.csv` files for the `train` and `dev` splits. Note that the `dev` split is only provided for Telugu and Bengali. 
 
@@ -104,15 +106,12 @@ The commands to evaluate the models in different settings like zero-shot transfe
 ## Cite
 Please cite our work if you use or extend our work:
 ```
-@inproceedings{mittal-etal-2023-xclaim,
-    title = "{L}ost in {T}ranslation, {F}ound in {S}pans: {I}dentifying {C}laims in {M}ultilingual {S}ocial {M}edia",
-    author = "Mittal, Shubham  and
-      Sundriyal, Megha  and
-      Nakov, Preslav",
-    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
-    month = dec,
-    year = "2023",
-    address = "Singapore",
-    publisher = "Association for Computational Linguistics",
+@misc{mittal2023xclaim,
+      title={{L}ost in {T}ranslation, {F}ound in {S}pans: {I}dentifying {C}laims in {M}ultilingual {S}ocial {M}edia}, 
+      author={Shubham Mittal and Megha Sundriyal and Preslav Nakov},
+      year={2023},
+      eprint={2310.18205},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
 }
 ```
