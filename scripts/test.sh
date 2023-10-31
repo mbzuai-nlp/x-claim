@@ -5,7 +5,7 @@ gpu=0
 # monolingual models
 encoding=io
 seed=2022
-for model in xlmr; do
+for model in mbert mdeberta xlmr; do
     if [ ${model} = 'mbert' ]; then
         plm='bert-base-multilingual-cased'
     elif [ ${model} = 'mdeberta' ]; then
@@ -27,7 +27,7 @@ done
 # multilingual models
 encoding=io
 seed=2022
-for model in xlmr; do
+for model in mbert mdeberta xlmr; do
     if [ ${model} = 'mbert' ]; then
         plm='bert-base-multilingual-cased'
     elif [ ${model} = 'mdeberta' ]; then
@@ -49,7 +49,7 @@ done
 # zero-shot transfer
 encoding=io
 seed=2022
-for model in mdeberta; do
+for model in mbert mdeberta xlmr; do
     if [ ${model} = 'mbert' ]; then
         plm='bert-base-multilingual-cased'
     elif [ ${model} = 'mdeberta' ]; then
@@ -71,7 +71,7 @@ done
 # translation models
 encoding=io
 seed=2022
-for model in xlmr; do
+for model in mbert mdeberta xlmr; do
     if [ ${model} = 'mbert' ]; then
         plm='bert-base-multilingual-cased'
     elif [ ${model} = 'mdeberta' ]; then
