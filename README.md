@@ -5,6 +5,7 @@ X-CLAIM consists of 7K real-world claims, and social media posts containing them
 We also provide the code of baseline model that trains the encoder-only language models like mDeBERTa on the X-CLAIM dataset.
 
 This work got accepted at the **EMNLP 2023 (main)** conference.
+Checkout the video ([link](https://drive.google.com/file/d/1ziHlNgbddb4M2y8uPnIpOk0zO5fazpmc/view?usp=sharing)) or poster ([link](https://drive.google.com/file/d/19gUpRzb3e_CiEqVWs8flCwQwCTNqNFDA/view?usp=sharing)) presentation for a brief overview. 
 
 <a href='https://arxiv.org/abs/2310.18205'><img src='https://img.shields.io/badge/ArXiv-PDF-blue'></a>
 
@@ -20,12 +21,12 @@ The `train`, `dev` and `test` split for the `lang` language is provided inside `
 For reproducibility of the results, we provide the translated data in the target `lang` language in `./data/{split}-en2{lang}.csv` files for the `train` and `dev` splits. Note that the `dev` split is only provided for Telugu and Bengali. 
 
 We use language IDs in the `lang` variable as per below scheme.
-1. English: en
-2. Hindi: hi
-3. Punjabi: pa
-4. Tamil: ta
-5. Telugu: te
-6. Bengali: bn
+1. English: `en`
+2. Hindi: `hi`
+3. Punjabi: `pa`
+4. Tamil: `ta`
+5. Telugu: `te`
+6. Bengali: `bn`
 
 To reproduce the multilingual training baselines, the `./data/{split}-multilingual.csv` file contains the aggregated data of all languages for the `train` and `dev` splits.
 
