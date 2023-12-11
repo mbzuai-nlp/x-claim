@@ -107,12 +107,19 @@ The commands to evaluate the models in different settings like zero-shot transfe
 ## Cite
 Please cite our work if you use or extend our work:
 ```
-@misc{mittal2023xclaim,
-      title={{L}ost in {T}ranslation, {F}ound in {S}pans: {I}dentifying {C}laims in {M}ultilingual {S}ocial {M}edia}, 
-      author={Shubham Mittal and Megha Sundriyal and Preslav Nakov},
-      year={2023},
-      eprint={2310.18205},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
-}
+@inproceedings{mittal-etal-2023-lost,
+    title = "{L]ost in {T}ranslation, {F}ound in {S}pans: {I}dentifying {C}laims in {M}ultilingual {S}ocial {M}edia",
+    author = "Mittal, Shubham  and
+      Sundriyal, Megha  and
+      Nakov, Preslav",
+    editor = "Bouamor, Houda  and
+      Pino, Juan  and
+      Bali, Kalika",
+    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
+    month = dec,
+    year = "2023",
+    address = "Singapore",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.emnlp-main.236",
+    pages = "3887--3902",
 ```
