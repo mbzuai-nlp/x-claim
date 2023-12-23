@@ -42,20 +42,21 @@ def get_arg_parser():
 
 def get_io_data(
         csv_path, 
-        use_encoding_bio=False,
-        use_encoding_beio=False,
-        use_encoding_io=True,
-        use_encoding_beo=False,
+        encoding,
         test=False
     ):
     data = pd.read_csv(csv_path)
 
-    seqs, labels = [], []
+    seqs = []
+    # if not test:
+    labels = []
+
     count_overlapping_spans, count_spans = 0, 0
     for i in range(len(data)):
         seq = ast.literal_eval((data['tokens'][i]))
         seqs.append(seq)
 
+        # if not test:
         label = ['O'] * len(seq)
         span_starts = json.loads(data['span_start_index'][i])
         span_ends = json.loads(data['span_end_index'][i])
@@ -74,18 +75,17 @@ def get_io_data(
                 if label[idx] != 'O':
                     count_overlapping_spans += 1
 
-                # label[idx] = 'B' if idx == span_s else 'I'
-                if use_encoding_bio:
+                if encoding == 'bio':
                     label[idx] = 'B' if idx == span_s else 'I'
-                elif use_encoding_io:
+                elif encoding == 'io':
                     label[idx] = 'I'
-                elif use_encoding_beo:
+                elif encoding == 'beo':
                     if idx == span_s:
                         label[idx] = 'B'
                     elif idx == span_e:
                         label[idx] = 'E'
                     # else: label[idx] need not be 'O' due to presence of overlapping spans
-                elif use_encoding_beio:
+                elif encoding == 'beio':
                     if idx == span_s:
                         label[idx] = 'B'
                     elif idx == span_e:
@@ -93,7 +93,7 @@ def get_io_data(
                     else:
                         label[idx] = 'I'
                 else:
-                    raise NotImplementedError('all bio encodings specified are False!')
+                    raise NotImplementedError('unknown encoding: %s'%(encoding))
 
         labels.append(label)
 
@@ -104,9 +104,10 @@ def get_io_data(
     )
 
     return (seqs, labels)
+    # return (seqs, None)
 
 class myDataset(torch.utils.data.Dataset):
-    def __init__(self, examples, tokenizer, max_seq_len, dict_lbl2idx, dict_idx2lbl, label_dict, label_all_tokens=True, test=False):
+    def __init__(self, examples, tokenizer, max_seq_len, dict_lbl2idx, label_all_tokens=True, test=False):
         super(myDataset, self).__init__()
         self.test = test
         self.examples = examples
@@ -335,44 +336,38 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.info(args)
-    
-    label_all_tokens = True
-
-    use_encoding_bio = True if args.encoding == 'bio' else False
-    use_encoding_beio = True if args.encoding == 'beio' else False
-    use_encoding_io = True if args.encoding == 'io' else False
-    use_encoding_beo = True if args.encoding == 'beo' else False
 
     # mapping between encoding and index
+    encoding = args.encoding
     dict_lbl2idx, dict_idx2lbl = {}, {}
-    if use_encoding_bio:
+    if encoding == 'bio':
         dict_lbl2idx = {'B': 2, 'I': 1, 'O': 0}
         dict_idx2lbl = {2:'B', 1:'I', 0:'O'}
-    elif use_encoding_beio:
+    elif encoding == 'beio':
         dict_lbl2idx = {'E': 3, 'B': 2, 'I': 1, 'O': 0}
         dict_idx2lbl = {3:'E', 2:'B', 1:'I', 0:'O'}    
-    elif use_encoding_io:
+    elif encoding == 'io':
         dict_lbl2idx = {'I': 1, 'O': 0}
         dict_idx2lbl = {1:'I', 0:'O'}
-    elif use_encoding_beo:
+    elif encoding == 'beo':
         dict_lbl2idx = {'B': 2, 'E': 1, 'O': 0}
         dict_idx2lbl = {2:'B', 1:'E', 0:'O'}
     else:
-        raise NotImplementedError('all specified bio encodings are False!')
+        raise NotImplementedError('unknown encoding: %s'%(encoding))
 
     # model
     plm = AutoModel.from_pretrained(args.plm)
     plm_tokenizer = AutoTokenizer.from_pretrained(args.plm)
 
     num_labels = 1
-    if use_encoding_bio or use_encoding_beo:
+    if encoding == 'bio' or encoding == 'beo':
         num_labels = 3
-    elif use_encoding_beio:
+    elif encoding == 'beio':
         num_labels = 4
-    elif use_encoding_io:
+    elif encoding == 'io':
         num_labels = 2
     else:
-        raise NotImplementedError('all specified bio encodings are False!')
+        raise NotImplementedError('unknown encoding: %s'%(encoding))
     model = myModel(
         plm=plm, 
         hidden_dim=plm.config.hidden_size, 
@@ -386,22 +381,16 @@ if __name__ == "__main__":
     if args.train:
         train_seqs, train_labels = get_io_data(
             args.path_train,
-            use_encoding_bio,
-            use_encoding_beio,
-            use_encoding_io,
-            use_encoding_beo
+            encoding,
         )
         dev_seqs, dev_labels = get_io_data(
             args.path_dev,
-            use_encoding_bio,
-            use_encoding_beio,
-            use_encoding_io,
-            use_encoding_beo
+            encoding,
         )
         logger.info("#train = %d, #dev = %d"%(len(train_seqs), len(dev_labels)))
 
-        trainset = myDataset((train_seqs, train_labels), plm_tokenizer, max_seq_len, dict_lbl2idx, dict_idx2lbl, label_all_tokens)
-        devset = myDataset((dev_seqs, dev_labels), plm_tokenizer, max_seq_len, dict_lbl2idx, dict_idx2lbl, label_all_tokens)
+        trainset = myDataset((train_seqs, train_labels), plm_tokenizer, max_seq_len, dict_lbl2idx)
+        devset = myDataset((dev_seqs, dev_labels), plm_tokenizer, max_seq_len, dict_lbl2idx)
         train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, **kwargs)
         dev_loader = torch.utils.data.DataLoader(devset, batch_size=batch_size, shuffle=False, **kwargs)
         logger.info("# train samples = %d, # dev samples = %d"%(len(trainset), len(devset)))
@@ -409,14 +398,12 @@ if __name__ == "__main__":
     else:
         test_seqs, test_labels = get_io_data(
             args.path_test,
-            use_encoding_bio,
-            use_encoding_beio,
-            use_encoding_io,
-            use_encoding_beo,
+            encoding,
+            test=False,
         )
         logger.info("#test = %d"%(len(test_seqs)))
 
-        testset = myDataset((test_seqs, test_labels), plm_tokenizer, max_seq_len, dict_lbl2idx, dict_idx2lbl, label_all_tokens, test=True)
+        testset = myDataset((test_seqs, test_labels), plm_tokenizer, max_seq_len, dict_lbl2idx, test=True)
         test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, **kwargs)
         logger.info("# test samples = %d"%(len(testset)))
 
@@ -516,7 +503,7 @@ if __name__ == "__main__":
         test_metrics = compute_metrics(word_labels, word_preds, args.encoding, dict_lbl2idx, dict_idx2lbl)
         print(test_metrics)
 
-        # write the predictions (e.g., for error analysis)
+        # # write the predictions (e.g., for error analysis)
         # # contiguous span
         # pred_texts, pred_span_s, pred_span_e = [], [], []
         # for (pred_text, pred_label) in zip(testset.seqs, word_preds):
