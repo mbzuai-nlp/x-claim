@@ -15,41 +15,32 @@ def get_arg_parser():
 
 if __name__ == "__main__":
     args = get_arg_parser()
-    use_encoding_bio = True if args.encoding == 'bio' else False
-    use_encoding_beio = True if args.encoding == 'beio' else False
-    use_encoding_io = True if args.encoding == 'io' else False
-    use_encoding_beo = True if args.encoding == 'beo' else False
+    encoding = args.encoding
 
     gold_seqs, gold_labels = get_io_data(
         args.gold_csv,
-        use_encoding_bio,
-        use_encoding_beio,
-        use_encoding_io,
-        use_encoding_beo
+        encoding,
     )
     pred_seqs, pred_labels = get_io_data(
         args.pred_csv,
-        use_encoding_bio,
-        use_encoding_beio,
-        use_encoding_io,
-        use_encoding_beo
+        encoding,
     )
 
     dict_lbl2idx, dict_idx2lbl = {}, {}
-    if use_encoding_bio:
+    if encoding == 'bio':
         dict_lbl2idx = {'B': 2, 'I': 1, 'O': 0}
         dict_idx2lbl = {2:'B', 1:'I', 0:'O'}
-    elif use_encoding_beio:
+    elif encoding == 'beio':
         dict_lbl2idx = {'E': 3, 'B': 2, 'I': 1, 'O': 0}
         dict_idx2lbl = {3:'E', 2:'B', 1:'I', 0:'O'}    
-    elif use_encoding_io:
+    elif encoding == 'io':
         dict_lbl2idx = {'I': 1, 'O': 0}
         dict_idx2lbl = {1:'I', 0:'O'}
-    elif use_encoding_beo:
+    elif encoding == 'beo':
         dict_lbl2idx = {'B': 2, 'E': 1, 'O': 0}
         dict_idx2lbl = {2:'B', 1:'E', 0:'O'}
     else:
-        raise NotImplementedError('all specified bio encodings are False!')
+        raise NotImplementedError('unknown encoding: %s'%(encoding))
 
     assert len(gold_seqs) == len(pred_seqs)
     assert len(gold_labels) == len(pred_labels)
