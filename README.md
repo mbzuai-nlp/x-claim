@@ -5,7 +5,7 @@ X-CLAIM consists of 7K real-world claims, and social media posts containing them
 We also provide the code of baseline model that trains the encoder-only language models like mDeBERTa on the X-CLAIM dataset.
 
 This work appeared at the **EMNLP 2023 (main)** conference ([paper link](https://aclanthology.org/2023.emnlp-main.236/)).
-Checkout the video ([link](https://drive.google.com/file/d/1ziHlNgbddb4M2y8uPnIpOk0zO5fazpmc/view?usp=sharing)) or poster ([link](https://drive.google.com/file/d/19gUpRzb3e_CiEqVWs8flCwQwCTNqNFDA/view?usp=sharing)) presentation for a brief overview. 
+Checkout the video ([link](https://youtu.be/58z8uAxS2cs?feature=shared)) or poster ([link](https://drive.google.com/file/d/19gUpRzb3e_CiEqVWs8flCwQwCTNqNFDA/view?usp=sharing)) presentation for a brief overview. 
 
 <a href='https://arxiv.org/abs/2310.18205'><img src='https://img.shields.io/badge/ArXiv-PDF-blue'></a>
 
